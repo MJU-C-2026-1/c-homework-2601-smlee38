@@ -47,10 +47,10 @@
      * **해결:** AI에게 에러 원인을 질문하여 scanf(" %c", &seat_row);와 같이 %c 앞에 공백(스페이스바)을 한 칸 두면 버퍼에 남은 쓰레기 값을 무시할 수 있다는 팁을 얻음. 코드를 수정한 후 정상적으로 문자를 입력받는 것을 확인함.
      
 ### **📁 증빙 자료:**
-  * [1차_AI협업캡처.pdf 첨부 완료] ![1차과제_실행결과 jpg](https://github.com/user-attachments/assets/a221fc34-b702-4122-874c-6ceba06d8a58)
+  * [1차_AI협업캡처.pdf 첨부 완료] 
 
+  * [1차과제_실행결과.jpg]![1차과제_실행결과 jpg](https://github.com/user-attachments/assets/bafe89b4-99b8-4ad7-a61e-acf9f33311dc)
 
-  * [1차과제_실행결과.jpg]
 
 <br>
 
