@@ -80,7 +80,8 @@
 
      
 ### **📁 증빙 자료:**
-  * [2차_AI협업캡처.pdf 첨부 완료] (첨부 후 링크)
+  * [2차_AI협업캡처.pdf 첨부 완료] (첨부 후 링크)[60242399_이승민_2차AI협업.pdf](https://github.com/user-attachments/files/27300454/60242399_._2.AI.pdf)
+
   * [2차과제_실행결과.jpg]<img width="474" height="530" alt="60242399_이승민_2차과제_실행결과" src="https://github.com/user-attachments/assets/03fb49d8-81a7-4081-a143-11009f2fb625" />
 
 <br>
