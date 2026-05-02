@@ -53,7 +53,7 @@ int main()
   printf("경로(만 65세 이상)는 몇 명입니까? :");
   scanf("%d", &senior_count);
 
-  printf("\n시간대를 선택하세요 (1:조조, 2:일반, 3:심야)");
+  printf("\n시간대를 선택하세요 (1:조조, 2:일반, 3:심야) :");
   scanf("%d", &time_code);
 
   //총 인원수 계산
