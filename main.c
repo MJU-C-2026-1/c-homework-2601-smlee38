@@ -8,7 +8,7 @@
 
 //1. 전역 변수 선언부
 int g_ticket_number = 1000;     // 고유 발권 번호 (예매마다 1씩 증가하게)
-int g_remaining_seats = 30;     // 샹영관 잔여 좌석 수 (초기 30석으로 설정)
+int g_remaining_seats = 30;     // 상영관 잔여 좌석 수 (초기 30석으로 설정)
 
 //2. 함수 원형 선언부
 void show_kiosk_screen();
@@ -145,7 +145,7 @@ void make_reservation()
   people_count = teen_count + adult_count + senior_count;
   if (people_count <= 0)
   {
-    printf("\n[오류] 1명 이상 선택하셔야 예매가 가능합니다. 초기 화면으로 돌아갑니다.");
+    printf("\n[오류] 1명 이상 선택하셔야 예매가 가능합니다. 초기 화면으로 돌아갑니다.\n");
     return;
   }
 
@@ -236,7 +236,7 @@ void make_reservation()
 
   printf("--------------------------------------------\n");
   printf(" 정상 금액:\t%d원\n", total_price);
-  printf(" 최종 결재액:\t%.0f원\n", final_price);
+  printf(" 최종 결제액:\t%.0f원\n", final_price);
   printf("============================================\n");
   printf(" 결제가 완료되었습니다. 티켓을 챙겨주세요.\n");
   printf(" (잠시 후 초기 화면으로 돌아갑니다...)\n");
