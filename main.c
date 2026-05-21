@@ -29,7 +29,7 @@ int main()
     {
       make_reservation();
     }
-    else if (choice == 2)
+    else if (choice == 0) // 관리자용 종료 버튼
     {
       printf("\n[시스템] 키오스크 프로그램을 종료합니다.\n");
       break;
@@ -51,8 +51,9 @@ void show_kiosk_screen()
   printf("\n          MJU 영화 예매 전용 키오스크         ");
   printf("\n============================================\n");
   printf("1. 영화 티켓 예매하기 (남은 좌석 : %d석)\n", g_remaining_seats);
+  printf("0. 시스템 셧다운 (관리자용, 관리자 외 선택 절대 금지)\n");
   printf("============================================\n");
-  printf("원하시는 메뉴 번호를 입력해주세요 :");
+  printf("1번을 눌러 영화 예매를 진행하세요: ");
 }
 
 //기능 2: 영화 코드를 받아 단가를 반환하는 함수
