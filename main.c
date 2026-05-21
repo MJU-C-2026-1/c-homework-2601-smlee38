@@ -86,11 +86,11 @@ int get_ticket_price(char movie_code)
 void update_kiosk_system(int people_count)
 {
   g_ticket_number += 1;
-  g_ramaining_seats -= people_count;
+  g_remaining_seats -= people_count;
 }
 
 //기능 4: 실제 예매 프로세스를 진행하는 메인 로직 함수
-voide make_reservation()
+void make_reservation()
 {
   //이미 매진된 경우 예매 진입 차단
   if (g_remaining_seats <= 0)
@@ -135,7 +135,7 @@ voide make_reservation()
   scanf("%d", &teen_count);
 
   printf("일반(만 19~64세) 수 :");
-  scanf("%d", adult_count);
+  scanf("%d", &adult_count);
 
   printf("경로(만 65세 이상) 수 :");
   scanf("%d", &senior_count);
@@ -151,7 +151,7 @@ voide make_reservation()
   //[예외 처리] 선택된 인원이 남은 좌석보다 많은 경우 예매 중단
   if (people_count > g_remaining_seats)
   {
-    printf("\n[오류] 좌석이 부족합니다. (선택 인원 : %d명 / 남은 좌석 : %d석)\n, people_count, g_remaining_seats");
+    printf("\n[오류] 좌석이 부족합니다. (선택 인원 : %d명 / 남은 좌석 : %d석)\n", people_count, g_remaining_seats);
     printf("초기 화면으로 돌아갑니다. 인원수를 다시 조정해주세요.\n");
     return;
   }
@@ -181,7 +181,7 @@ voide make_reservation()
     }
   }
 
-  teen_rate 0.2 + time_discount;
+  teen_rate = 0.2 + time_discount;
   senior_rate = 0.5 + time_discount;
   adult_rate = 0.0 + time_discount;
 
@@ -192,7 +192,7 @@ voide make_reservation()
   }
   if (senior_rate > 1.0)
   {
-    senior_rate = 1.0
+    senior_rate = 1.0;
   }
   if (adult_rate > 1.0)
   {
