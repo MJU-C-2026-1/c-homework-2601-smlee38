@@ -241,4 +241,5 @@ void make_reservation()
   printf(" 결제가 완료되었습니다. 티켓을 챙겨주세요.\n");
   printf(" (잠시 후 초기 화면으로 돌아갑니다...)\n");
 }
+//
 
