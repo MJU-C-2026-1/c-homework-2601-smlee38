@@ -105,8 +105,11 @@
      * **해결:** make_reservation 함수 내에서 총 관람 인원(people_count)을 산출한 직후, 전역 변수인 g_remaining_seats와 비교되는 예외 처리 조건문 (if (people_count > g_remaining_seats) )을 추가. 좌석이 부족할 경우 경고 메시지와 함께 return;을 실행하여 함수를 조기에 종료시킴으로써 엉터리 발권을 원천 차단하고 시스템의 방어적 프로그래밍 수준을 한 단계 끌어올림.
      
 ### **📁 증빙 자료:**
-  * [3차_AI협업캡처.pdf 첨부 완료] (첨부 후 링크)
-  * [3차과제_실행결과.jpg]
+  * [3차_AI협업캡처.pdf 첨부 완료] [3차_AI협업캡쳐.pdf](https://github.com/user-attachments/files/28202103/3._AI.pdf)
+(첨부 후 링크)
+  * [3차과제_실행결과.jpg]<img width="1030" height="1018" alt="3차과제_실행결과_페이지_2" src="https://github.com/user-attachments/assets/2d44dbea-de41-4bb2-b096-666de917095b" />
+<img width="1092" height="1320" alt="3차과제_실행결과_페이지_1" src="https://github.com/user-attachments/assets/256b5c9d-0c10-48ae-9e11-600832bb9028" />
+
 <br>
 
 ### 🟥 [4차 과제: V4.0] 모듈화 및 데이터 확장 (배열과 함수) - 🌟최종 완성 -- 향후 작성 예정
