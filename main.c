@@ -126,7 +126,7 @@ int main()
 }
 
 // 기능 1: 손님용 키오스크 첫 화면 출력
-void show_kiost_screen()
+void show_kiosk_screen()
 {
   printf("\n======================================================");
   printf("\n              MJU 영화 예매 전용 키오스크               ");
@@ -134,12 +134,12 @@ void show_kiost_screen()
   printf("1. 영화 티켓 예매하기 (남은 좌석 : %d석)\n", g_remaining_seats);
   printf("2. 예매 내역 조회하기\n");
   printf("0. 관리자 메뉴\n");
-  printf("========================================================");
+  printf("========================================================\n");
   printf("메뉴 번호를 입력하세요: ");
 }
 
 // 기능 2: 관리자 메뉴 화면 출력
-voide show_admin_menu()
+void show_admin_menu()
 {
   printf("\n=======================================================");
   printf("\n                 [관리자 전용 메뉴                     ]");
@@ -287,14 +287,14 @@ const char* get_time_name(int time_code)
 // 기능 8: 예매 성공 시 시스템 데이터 변경
 void update_kiosk_system(int people_count)
 {
-  g_ticket_number += 1:
+  g_ticket_number += 1;
   g_remaining_seats -= people_count;
 }
 
 // 기능 9: 좌석 열 문자를 배열 인덱스로 변환
 int get_row_index(char row)
 {
-  if (row >= 'A' && row <= 'E');
+  if (row >= 'A' && row <= 'E')
   {
     return row - 'A';
   }
@@ -390,7 +390,7 @@ void assign_same_row(int row_index, int people_count, int seat_starts[], int sea
 {
   int start_seat;
 
-  start_seat = SEAT_PER_ROW - g_row_remaining_seats[row_index] + 1;
+  start_seat = SEATS_PER_ROW - g_row_remaining_seats[row_index] + 1;
 
   seat_starts[row_index] = start_seat;
   seat_counts[row_index] = people_count;
@@ -425,7 +425,7 @@ void assign_split_seats(int people_count, int seat_starts[], int seat_counts[])
     start_seat = SEATS_PER_ROW - g_row_remaining_seats[i] + 1;
 
     seat_starts[i] = start_seat;
-    seat_count[i] = take_count;
+    seat_counts[i] = take_count;
 
     g_row_remaining_seats[i] -= take_count;
     remaining_people -= take_count;
@@ -464,3 +464,339 @@ void print_seat_info(int seat_starts[], int seat_counts[])
   }
 }
 
+// 기능 17: 좌석 열 선택 및 좌석 자동 배정
+int select_and_assign_seats(int people_count, int seat_starts[], int seat_counts[])
+{
+  char seat_row;
+  int row_index;
+  int menu_choice;
+  int available_row;
+
+  clear_seat_arrays(seat_starts, seat_counts);
+  show_row_status();
+
+  printf("[안내] 원하는 좌석 열을 입력하세요 (A~E): ");
+  scanf(" %c", &seat_row);
+
+  row_index = get_row_index(seat_row);
+
+  if (row_index == -1)
+  {
+    printf("\n[오류] 존재하지 않는 좌석 열입니다. 초기 화면으로 돌아갑니다. \n");
+    return 0;
+  }
+
+  if (g_row_remaining_seats[row_index] >= people_count)
+  {
+    assign_same_row(row_index, people_count, seat_starts, seat_counts);
+    printf("\n[좌석 배정] 선택하신 %c열에 나란히 배정되었습니다. \n", 'A' + row_index);
+    return 1;
+  }
+ printf("\n[안내] 선택하신 %c열에는 남은 좌석이 %d석뿐입니다.\n",
+         'A' + row_index, g_row_remaining_seats[row_index]);
+  printf("[안내] 현재 인원 %d명이 %c열에 모두 같이 앉을 수 없습니다.\n",
+         people_count, 'A' + row_index);
+
+  available_row = find_available_row(people_count);
+
+  if (available_row != -1)
+  {
+    printf("\n[안내] 다른 열에는 일행이 모두 같이 앉을 수 있는 자리가 있습니다.\n");
+    show_rows_for_group(people_count);
+    printf("1. 다른 열에 같이 앉기\n");
+    printf("0. 예매 취소 후 메인 화면으로 돌아가기\n");
+    printf("메뉴를 선택하세요: ");
+    scanf("%d", &menu_choice);
+
+    if (menu_choice == 1)
+    {
+      show_rows_for_group(people_count);
+      printf("[안내] 같이 앉을 다른 열을 입력하세요 (A~E): ");
+      scanf(" %c", &seat_row);
+
+      row_index = get_row_index(seat_row);
+
+      if (row_index == -1 || g_row_remaining_seats[row_index] < people_count)
+      {
+        printf("\n[오류] 해당 열에는 일행이 같이 앉을 수 없습니다. 초기 화면으로 돌아갑니다.\n");
+        return 0;
+      }
+
+      assign_same_row(row_index, people_count, seat_starts, seat_counts);
+      printf("\n[좌석 배정] 선택하신 %c열에 나란히 배정되었습니다.\n", 'A' + row_index);
+      return 1;
+    }
+    else
+    {
+      printf("\n[안내] 예매를 취소하고 메인 화면으로 돌아갑니다.\n");
+      return 0;
+    }
+  }
+  else
+  {
+    printf("\n[안내] 현재 어느 한 열에도 %d명이 나란히 앉을 수 있는 좌석은 없습니다.\n", people_count);
+
+    if (g_remaining_seats >= people_count)
+    {
+      printf("[안내] 다만 전체 남은 좌석 수는 충분하므로, 여러 열에 나누어 앉을 수 있습니다.\n");
+      printf("2. 따로 앉기\n");
+      printf("0. 예매 취소 후 메인 화면으로 돌아가기\n");
+      printf("메뉴를 선택하세요: ");
+      scanf("%d", &menu_choice);
+
+      if (menu_choice == 2)
+      {
+        assign_split_seats(people_count, seat_starts, seat_counts);
+        printf("\n[좌석 배정] 여러 열에 나누어 배정되었습니다.\n");
+        return 1;
+      }
+      else
+      {
+        printf("\n[안내] 예매를 취소하고 메인 화면으로 돌아갑니다.\n");
+        return 0;
+      }
+    }
+    else
+    {
+      printf("[오류] 전체 남은 좌석 수도 부족합니다. 초기 화면으로 돌아갑니다.\n");
+      return 0;
+    }
+  }
+}
+
+// 기능 18: 예매 성공 데이터를 배열에 저장
+void save_reservation(int ticket_number, char movie_code, int seat_starts[], int seat_counts[], int people_count, double final_price)
+{
+  int index = g_reservation_count;
+  int i;
+
+  g_reservation_numbers[index] = ticket_number;
+  g_movie_codes[index] = movie_code;
+  g_people_counts[index] = people_count;
+  g_final_prices[index] = final_price;
+
+  for(i=0; i<ROW_COUNT; i++)
+  {
+    g_seat_start_infos[index][i] = seat_starts[i];
+    g_seat_count_infos[index][i] = seat_counts[i];
+  }
+
+  g_reservation_count++;
+}
+
+// 기능 19: 실제 예매 프로세스
+void make_reservation()
+{
+  char movie_code;
+  int seat_starts[ROW_COUNT];
+  int seat_counts[ROW_COUNT];
+  int ticket_price = 0;
+  int total_price;
+  double final_price;
+  double teen_total;
+  double senior_total;
+  double adult_total;
+
+  int teen_count = 0, adult_count = 0, people_count = 0, senior_count = 0;
+  int time_code;
+  double time_discount = 0.0;
+  double teen_rate = 0.0, adult_rate = 0.0, senior_rate = 0.0;
+
+  if (g_remaining_seats <= 0)
+  {
+    printf("\n[안내] 죄송합니다. 해당 상영 회차는 매진되었습니다.\n");
+    return;
+  }
+
+  if (g_reservation_count >= MAX_RESERVATIONS)
+  {
+    printf("\n[안내] 예매 저장 공간이 가득 찼습니다. 더 이상 예매 데이터를 저장할 수 없습니다.\n");
+    return;
+  }
+
+  printf("\n[안내] 영화 코드를 입력하세요 (A: 2D, B: 3D, C: IMAX) : ");
+  scanf(" %c", &movie_code);
+
+  ticket_price = get_ticket_price(movie_code);
+  if (ticket_price == 0)
+  {
+    printf("\n[오류] 존재하지 않는 영화 코드입니다. 초기 화면으로 돌아갑니다. \n");
+    return;
+  }
+    printf("\n--- 관람 인원 선택 (현재 예매 가능 좌석 : %d석) ---\n", g_remaining_seats);
+  printf("청소년(만 19세 미만) 수 : ");
+  scanf("%d", &teen_count);
+
+  printf("일반(만 19~64세) 수 : ");
+  scanf("%d", &adult_count);
+
+  printf("경로(만 65세 이상) 수 : ");
+  scanf("%d", &senior_count);
+
+  people_count = teen_count + adult_count + senior_count;
+
+  if (people_count <= 0)
+  {
+    printf("\n[오류] 1명 이상 선택하셔야 예매가 가능합니다. 초기 화면으로 돌아갑니다.\n");
+    return;
+  }
+
+  if (people_count > g_remaining_seats)
+  {
+    printf("\n[오류] 좌석이 부족합니다. (선택 인원 : %d명 / 남은 좌석 : %d석)\n", people_count, g_remaining_seats);
+    printf("초기 화면으로 돌아갑니다. 인원수를 다시 조정해주세요.\n");
+    return;
+  }
+
+  printf("\n[안내] 상영 시간대를 선택하세요 (1: 조조, 2: 일반, 3: 심야) : ");
+  scanf("%d", &time_code);
+
+  if (time_code < 1 || time_code > 3)
+  {
+    printf("\n[오류] 잘못된 시간대입니다. 초기 화면으로 돌아갑니다.\n");
+    return;
+  }
+
+  if (select_and_assign_seats(people_count, seat_starts, seat_counts) == 0)
+  {
+    return;
+  }
+
+  switch (time_code)
+  {
+    case 1:
+    case 3:
+      time_discount = 0.2;
+      break;
+
+    case 2:
+      time_discount = 0.0;
+      break;
+  }
+
+  teen_rate = 0.2 + time_discount;
+  senior_rate = 0.5 + time_discount;
+  adult_rate = time_discount;
+
+  if (teen_rate > 1.0)
+  {
+    teen_rate = 1.0;
+  }
+  if (senior_rate > 1.0)
+  {
+    senior_rate = 1.0;
+  }
+  if (adult_rate > 1.0)
+  {
+    adult_rate = 1.0;
+  }
+
+  teen_total = (ticket_price * teen_count) * (1.0 - teen_rate);
+  senior_total = (ticket_price * senior_count) * (1.0 - senior_rate);
+  adult_total = (ticket_price * adult_count) * (1.0 - adult_rate);
+
+  total_price = ticket_price * people_count;
+  final_price = teen_total + senior_total + adult_total;
+
+  update_kiosk_system(people_count);
+  save_reservation(g_ticket_number, movie_code, seat_starts, seat_counts, people_count, final_price);
+
+  printf("============================================\n");
+  printf("          [모바일 티켓 / 영수증]          \n");
+  printf("============================================\n");
+  printf(" 발권 번호:\tNO.%d\n", g_ticket_number);
+  printf(" 영화 코드:\t%c 타입(%s)\n", movie_code, get_movie_name(movie_code));
+  printf(" 상영 시간:\t%s\n", get_time_name(time_code));
+  printf(" 좌석 정보:\t");
+  print_seat_info(seat_starts, seat_counts);
+  printf("\n");
+  printf("--------------------------------------------\n");
+  printf("[결제 세부 내역]\n");
+
+  if (teen_count > 0)
+  {
+    printf("  청소년:\t%d명 (할인 %.0f%% 적용)\n", teen_count, teen_rate * 100);
+  }
+  if (adult_count > 0)
+  {
+    printf("  일 반:\t%d명 (할인 %.0f%% 적용)\n", adult_count, adult_rate * 100);
+  }
+  if (senior_count > 0)
+  {
+    printf("  경 로:\t%d명 (할인 %.0f%% 적용)\n", senior_count, senior_rate * 100);
+  }
+
+  printf("--------------------------------------------\n");
+  printf(" 정상 금액:\t%d원\n", total_price);
+  printf(" 최종 결제액:\t%.0f원\n", final_price);
+  printf("============================================\n");
+  printf(" 결제가 완료되었습니다. 티켓을 챙겨주세요.\n");
+  printf(" (예매 데이터와 좌석 배정 정보가 배열에 저장되었습니다.)\n");
+}
+
+  // 기능 20: 예매 내역 조회
+void show_reservation_list(int numbers[], char movie_codes[], int seat_starts[][ROW_COUNT], int seat_counts[][ROW_COUNT], int people_counts[], double final_prices[], int count)
+{
+  int i;
+
+  if (count == 0)
+  {
+    printf("\n[조회] 아직 저장된 예매 내역이 없습니다.\n");
+    return;
+  }
+
+  printf("\n============================================\n");
+  printf("              [예매 내역 조회]              \n");
+  printf("============================================\n");
+
+  for (i = 0; i < count; i++)
+  {
+    printf("%d번째 예매\n", i + 1);
+    printf("  발권 번호 : NO.%d\n", numbers[i]);
+    printf("  영화 타입 : %s\n", get_movie_name(movie_codes[i]));
+    printf("  좌석 정보 : ");
+    print_seat_info(seat_starts[i], seat_counts[i]);
+    printf("\n");
+    printf("  관람 인원 : %d명\n", people_counts[i]);
+    printf("  결제 금액 : %.0f원\n", final_prices[i]);
+    printf("--------------------------------------------\n");
+  }
+}
+// 기능 21: 매출 및 관람 인원 분석
+void analyze_sales(double *final_prices, int *people_counts, int count)
+{
+  int i;
+  double total_sales = 0.0;
+  int total_people = 0;
+  double average_sales = 0.0;
+
+  if (count == 0)
+  {
+    printf("\n[분석] 아직 분석할 예매 데이터가 없습니다.\n");
+    return;
+  }
+
+  for (i = 0; i < count; i++)
+  {
+    total_sales += *(final_prices + i);
+    total_people += *(people_counts + i);
+  }
+
+  average_sales = total_sales / count;
+
+  printf("\n============================================\n");
+  printf("             [매출 및 인원 분석]             \n");
+  printf("============================================\n");
+  printf(" 총 예매 건수        : %d건\n", count);
+  printf(" 총 관람 인원        : %d명\n", total_people);
+  printf(" 총 매출액           : %.0f원\n", total_sales);
+  printf(" 예매 1건당 평균 금액 : %.0f원\n", average_sales);
+  printf(" 남은 전체 좌석 수    : %d석\n", g_remaining_seats);
+  printf("--------------------------------------------\n");
+  printf(" A열 남은 좌석       : %d석\n", g_row_remaining_seats[0]);
+  printf(" B열 남은 좌석       : %d석\n", g_row_remaining_seats[1]);
+  printf(" C열 남은 좌석       : %d석\n", g_row_remaining_seats[2]);
+  printf(" D열 남은 좌석       : %d석\n", g_row_remaining_seats[3]);
+  printf(" E열 남은 좌석       : %d석\n", g_row_remaining_seats[4]);
+  printf("============================================\n");
+}
