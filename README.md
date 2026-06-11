@@ -126,6 +126,8 @@
      * **해결:** ...
      
 ### **📁 증빙 자료:**
-  * [4차_AI협업캡처.pdf 첨부 완료] (첨부 후 링크)
-  * [4차과제_실행결과.jpg]
+  * [4차_AI협업캡처.pdf 첨부 완료] (첨부 후 링크)[Uploading AI협업증명_4차.pdf…]()
+
+  * [4차과제_실행결과.jpg]<img width="914" height="616" alt="4차과제_실행결과" src="https://github.com/user-attachments/assets/f8f8cb8a-cd00-4d86-b9b8-619e9958c477" />
+
 <br>
