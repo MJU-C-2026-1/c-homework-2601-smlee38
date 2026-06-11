@@ -206,3 +206,170 @@ int run_admin_menu()
   }
 }
 
+// 기능 5: 영화 코드를 받아 단가를 반환하는 함수
+int get_ticket_price(char movie_code)
+{
+  switch (movie_code)
+  {
+    case 'A':
+    case 'a':
+    {
+      return 10000;
+    }
+    case 'B':
+    case 'b':
+    {
+      return 13000;
+    }
+    case 'C':
+    case 'c':
+    {
+      return 18000;
+    }
+    default:
+    {
+      return 0;
+    }
+  }
+}
+
+// 기능 6: 영화 코드에 해당하는 영화 타입 이름 반환
+const char* get_movie_name(char movie_code)
+{
+  switch (movie_code)
+  {
+    case 'A':
+    case 'a':
+    {
+      return "2D";
+    }
+    case 'B':
+    case 'b':
+    {
+      return "3D";
+    }
+    case 'C':
+    case 'c':
+    {
+      return "IMAX";
+    }
+    default:
+    {
+      return "알 수 없음";
+    }
+  }
+}
+
+// 기능 7: 시간 코드에 해당하는 시간대 이름 반환
+const char* get_time_name(int time_code)
+{
+  switch (time_code)
+  {
+    case 1:
+    {
+      return "조조";
+    }
+    case 2:
+    {
+      return "일반";
+    }
+    case 3:
+    {
+      return "심야";
+    }
+    default:
+    {
+      return "알 수 없음";
+    }
+  }
+}
+
+// 기능 8: 예매 성공 시 시스템 데이터 변경
+void update_kiosk_system(int people_count)
+{
+  g_ticket_number += 1:
+  g_remaining_seats -= people_count;
+}
+
+// 기능 9: 좌석 열 문자를 배열 인덱스로 변환
+int get_row_index(char row)
+{
+  if (row >= 'A' && row <= 'E');
+  {
+    return row - 'A';
+  }
+  else if (row >= 'a' && row <= 'e')
+  {
+    return row - 'a';
+  }
+  else
+  {
+    return -1;
+  }
+}
+
+/// 기능 10: 각 열의 남은 좌석 수 출력 
+void show_row_status()
+{
+  int i;
+  int next_seat;
+
+  printf("\n============================================\n");
+  printf("              [좌석 열 선택 안내]             \n");
+  printf("============================================\n");
+  printf("[안내] 본 키오스크는 좌석 번호를 직접 선택하지 않습니다.\n");
+  printf("[안내] 선택한 열에서 가장 왼쪽 좌석부터 자동으로 나란히 배정됩니다.\n");
+  printf("[안내] 각 열의 '(n행부터 착석)' 표시는 다음으로 배정될 시작 좌석입니다.\n");
+  printf("[안내] 일행이 있는 경우 가능한 한 같은 열에 연속 좌석으로 배정됩니다.\n");
+  printf("--------------------------------------------\n");
+
+  for (i = 0; i < ROW_COUNT; i++)
+  {
+    if (g_row_remaining_seats[i] > 0)
+    {
+      next_seat = SEATS_PER_ROW - g_row_remaining_seats[i] + 1;
+      printf(" %c열 남은 좌석: %d석 (%d행부터 착석)\n",
+             'A' + i, g_row_remaining_seats[i], next_seat);
+    }
+    else
+    {
+      printf(" %c열 남은 좌석: 0석 (매진)\n", 'A' + i);
+    }
+  }
+
+  printf("============================================\n");
+}
+
+// 기능 11: 일행이 같은 열에 앉을 수 있는 열 찾기
+int find_available_row(int people_count)
+{
+  int i;
+
+  for(i=0; i<ROW_COUNT; i++)
+  {
+    if (g_row_remaining_seats[i] >= people_count)
+    {
+      return i;
+    }
+  }
+
+  return -1;
+}
+
+// 기능 12: 같은 열에 나란히 앉을 수 있는 열 목록 출력
+void show_rows_for_group(int people_count)
+{
+  int i;
+
+  printf("[안내] 현재 인원이 같은 열에 나란히 앉을 수 있는 열: ");
+
+  for (i=0; i<ROW_COUNT; i++)
+  {
+    if (g_row_remaining_seats[i] >= people_count)
+    {
+      printf("%c열 ", 'A' + i);
+    }
+  }
+  printf("\n");
+}
+
