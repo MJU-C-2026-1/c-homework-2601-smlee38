@@ -373,3 +373,94 @@ void show_rows_for_group(int people_count)
   printf("\n");
 }
 
+// 기능 13: 좌석 배정 임시 배열 초기화
+void clear_seat_arrays(int seat_starts[], int seat_counts[])
+{
+  int i;
+
+  for (i=0; i<ROW_COUNT; i++)
+  {
+    seat_starts[i] = 0;
+    seat_counts[i] = 0;
+  }
+}
+
+// 기능 14: 특정 열에 연속 좌석 배정
+void assign_same_row(int row_index, int people_count, int seat_starts[], int seat_counts[])
+{
+  int start_seat;
+
+  start_seat = SEAT_PER_ROW - g_row_remaining_seats[row_index] + 1;
+
+  seat_starts[row_index] = start_seat;
+  seat_counts[row_index] = people_count;
+
+  g_row_remaining_seats[row_index] -= people_count;
+}
+
+// 기능 15: 여러 열에 나누어 좌석 배정
+void assign_split_seats(int people_count, int seat_starts[], int seat_counts[])
+{
+  int i;
+  int remaining_people = people_count;
+  int take_count;
+  int start_seat;
+
+  for (i=0; i<ROW_COUNT && remaining_people > 0; i++)
+  {
+    if (g_row_remaining_seats[i] <= 0)
+    {
+      continue;
+    }
+
+    if (g_row_remaining_seats[i] >= remaining_people)
+    {
+      take_count = remaining_people;
+    }
+    else
+    {
+      take_count = g_row_remaining_seats[i];
+    }
+
+    start_seat = SEATS_PER_ROW - g_row_remaining_seats[i] + 1;
+
+    seat_starts[i] = start_seat;
+    seat_count[i] = take_count;
+
+    g_row_remaining_seats[i] -= take_count;
+    remaining_people -= take_count;
+  }
+}
+
+//기능 16:좌석 정보 출력
+void print_seat_info(int seat_starts[], int seat_counts[])
+{
+  int i;
+  int end_seat;
+  int is_first = 1;
+
+  for (i = 0; i < ROW_COUNT; i++)
+  {
+    if (seat_counts[i] > 0)
+    {
+      if (is_first == 0)
+      {
+        printf(" / ");
+      }
+
+      end_seat = seat_starts[i] + seat_counts[i] - 1;
+
+      if (seat_counts[i] == 1)
+      {
+        printf("%c열 %d행", 'A' + i, seat_starts[i]);
+      }
+      else
+      {
+        printf("%c열 %d행 ~ %d행", 'A' + i, seat_starts[i], end_seat);
+      }
+
+      is_first = 0;
+    }
+  }
+}
+
